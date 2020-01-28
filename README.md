@@ -1,42 +1,54 @@
 # Collection of git hooks for Terraform to be used with [pre-commit framework](http://pre-commit.com/)
 
-[![Github tag](https://img.shields.io/github/tag/antonbabenko/pre-commit-terraform.svg)](https://github.com/antonbabenko/pre-commit-terraform/releases) ![](https://img.shields.io/maintenance/yes/2019.svg) [![Help Contribute to Open Source](https://www.codetriage.com/antonbabenko/pre-commit-terraform/badges/users.svg)](https://www.codetriage.com/antonbabenko/pre-commit-terraform)
+[![Github tag](https://img.shields.io/github/tag/antonbabenko/pre-commit-terraform.svg)](https://github.com/antonbabenko/pre-commit-terraform/releases) ![](https://img.shields.io/maintenance/yes/2020.svg) [![Help Contribute to Open Source](https://www.codetriage.com/antonbabenko/pre-commit-terraform/badges/users.svg)](https://www.codetriage.com/antonbabenko/pre-commit-terraform)
 
 ## How to install
 
-### Step 1
+### 1. Install dependencies
 
-On MacOSX install the `pre-commit` and `awk` (required for Terraform 0.12) package
+* [`pre-commit`](https://pre-commit.com/#install)
+* [`terraform-docs`](https://github.com/segmentio/terraform-docs) required for `terraform_docs` hooks. `GNU awk` is required if using `terraform-docs` older than 0.8.0 with Terraform 0.12.
+* [`TFLint`](https://github.com/terraform-linters/tflint) required for `terraform_tflint` hook.
+
+##### MacOS
 
 ```bash
-brew install pre-commit awk
+brew install pre-commit gawk terraform-docs tflint
 ```
 
-For other operating systems check the [official documentation](http://pre-commit.com/#install)
+##### Ubuntu
 
-### Step 2
+```bash
+sudo apt install python-pip3 gawk &&\
+pip3 install pre-commit
+curl -L "$(curl -s https://api.github.com/repos/segmentio/terraform-docs/releases/latest | grep -o -E "https://.+?-linux-amd64")" > terraform-docs && chmod +x terraform-docs && sudo mv terraform-docs /usr/bin/
+curl -L "$(curl -s https://api.github.com/repos/terraform-linters/tflint/releases/latest | grep -o -E "https://.+?_linux_amd64.zip")" > tflint.zip && unzip tflint.zip && rm tflint.zip && sudo mv tflint /usr/bin/
+```
+
+### 2. Install the pre-commit hook globally
+
+```bash
+DIR=~/.git-template
+git config --global init.templateDir ${DIR}
+pre-commit init-templatedir -t pre-commit ${DIR}
+```
+
+### 3. Add configs and hooks
 
 Step into the repository you want to have the pre-commit hooks installed and run:
 
 ```bash
+git init
 cat <<EOF > .pre-commit-config.yaml
 - repo: git://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.19.0
+  rev: <VERSION> # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
   hooks:
     - id: terraform_fmt
     - id: terraform_docs
 EOF
 ```
 
-### Step 3
-
-Install the pre-commit hook
-
-```bash
-pre-commit install
-```
-
-### Step 4
+### 4. Run
 
 After pre-commit hook has been installed you can run it manually on all files in the repository
 
@@ -46,20 +58,29 @@ pre-commit run -a
 
 ## Available Hooks
 
-There are several [pre-commit](http://pre-commit.com/) hooks to keep Terraform configurations (both `*.tf` and `*.tfvars`) and Terragrunt configurations (`*.hcl`) in a good shape:
-* `terraform_fmt` - Rewrites all Terraform configuration files to a canonical format.
-* `terraform_validate` - Validates all Terraform configuration files.
-* `terraform_docs` - Inserts input and output documentation into `README.md`. Recommended.
-* `terraform_docs_without_aggregate_type_defaults` - Inserts input and output documentation into `README.md` without aggregate type defaults.
-* `terraform_docs_replace` - Runs `terraform-docs` and pipes the output directly to README.md
-* `terraform_tflint` - Validates all Terraform configuration files with [TFLint](https://github.com/wata727/tflint).
-* `terragrunt_fmt` - Rewrites all Terragrunt configuration files (`*.hcl`) to a canonical format.
+There are several [pre-commit](https://pre-commit.com/) hooks to keep Terraform configurations (both `*.tf` and `*.tfvars`) and Terragrunt configurations (`*.hcl`) in a good shape:
+
+| Hook name                                        | Description                                                                                                                |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |
+| `terraform_fmt`                                  | Rewrites all Terraform configuration files to a canonical format.                                                          |
+| `terraform_validate`                             | Validates all Terraform configuration files.                                                                               |
+| `terraform_docs`                                 | Inserts input and output documentation into `README.md`. Recommended.                                                      |
+| `terraform_docs_without_aggregate_type_defaults` | Inserts input and output documentation into `README.md` without aggregate type defaults.                                   |
+| `terraform_docs_replace`                         | Runs `terraform-docs` and pipes the output directly to README.md                                                           |
+| `terraform_tflint`                               | Validates all Terraform configuration files with [TFLint](https://github.com/terraform-linters/tflint).                              |
+| `terragrunt_fmt`                                 | Rewrites all [Terragrunt](https://github.com/gruntwork-io/terragrunt) configuration files (`*.hcl`) to a canonical format. |
 
 Check the [source file](https://github.com/antonbabenko/pre-commit-terraform/blob/master/.pre-commit-hooks.yaml) to know arguments used for each hook.
 
-## Notes about hooks
+## Notes about terraform_docs hooks
 
-1. `terraform_docs` and `terraform_docs_without_aggregate_type_defaults` will insert/update documentation generated by [terraform-docs](https://github.com/segmentio/terraform-docs) between markers - `<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->` and `<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->` if they are present in `README.md`. Make sure that `terraform-docs` is installed.
+1. `terraform_docs` and `terraform_docs_without_aggregate_type_defaults` will insert/update documentation generated by [terraform-docs](https://github.com/segmentio/terraform-docs) framed by markers:
+```txt
+<!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
+<!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+```
+if they are present in `README.md`.
 
 1. `terraform_docs_replace` replaces the entire README.md rather than doing string replacement between markers. Put your additional documentation at the top of your `main.tf` for it to be pulled in. The optional `--dest` argument lets you change the name of the file that gets created/modified.
 
@@ -72,7 +93,16 @@ Check the [source file](https://github.com/antonbabenko/pre-commit-terraform/blo
 
 1. It is possible to pass additional arguments to shell scripts when using `terraform_docs` and `terraform_docs_without_aggregate_type_defaults`. Send pull-request with the new hook if there is something missing.
 
-1. `terraform-docs` works with Terraform 0.12 but support is hackish (it requires `awk` to be installed) and may contain bugs. You can follow the native support of Terraform 0.12 in `terraform-docs` in [issue #62](https://github.com/segmentio/terraform-docs/issues/62).
+## Notes about terraform_tflint hooks
+
+1. `terraform_tflint` supports custom arguments so you can enable module inspection, deep check mode etc.
+
+    1. Example:
+    ```yaml
+    hooks:
+      - id: terraform_tflint
+        args: ['--deep']
+    ```
 
 ## Notes for developers
 

@@ -3,9 +3,47 @@
 
 
 
+<a name="v1.24.0"></a>
+## [v1.24.0] - 2020-01-21
+
+- Added shfmt to autoformat shell scripts ([#86](https://github.com/antonbabenko/pre-commit-terraform/issues/86))
+
+
+<a name="v1.23.0"></a>
+## [v1.23.0] - 2020-01-21
+
+- Updated CHANGELOG
+- Added support for terraform-docs 0.8.0 with proper support for Terraform 0.12 syntax (bye-bye awk) ([#85](https://github.com/antonbabenko/pre-commit-terraform/issues/85))
+
+
+<a name="v1.22.0"></a>
+## [v1.22.0] - 2020-01-13
+
+- Updated CHANGELOG
+- move terraform-docs args after markdown command ([#83](https://github.com/antonbabenko/pre-commit-terraform/issues/83))
+
+
+<a name="v1.21.0"></a>
+## [v1.21.0] - 2019-11-16
+
+- Updated CHANGELOG
+- use getopt for args in the tflint hook, following the approach in terraform-docs ([#75](https://github.com/antonbabenko/pre-commit-terraform/issues/75))
+
+
+<a name="v1.20.0"></a>
+## [v1.20.0] - 2019-11-02
+
+- Updated CHANGELOG
+- Fixes [#65](https://github.com/antonbabenko/pre-commit-terraform/issues/65): terraform-docs should not fail if complex types contain 'description' keyword ([#73](https://github.com/antonbabenko/pre-commit-terraform/issues/73))
+- Added FUNDING.yml
+- Improve installation instructions and make README more readable ([#72](https://github.com/antonbabenko/pre-commit-terraform/issues/72))
+- Update rev in README.md ([#70](https://github.com/antonbabenko/pre-commit-terraform/issues/70))
+
+
 <a name="v1.19.0"></a>
 ## [v1.19.0] - 2019-08-20
 
+- Updated CHANGELOG
 - Updated README with terraform_tflint hook
 - Added support for TFLint with --deep parameter ([#53](https://github.com/antonbabenko/pre-commit-terraform/issues/53))
 
@@ -200,7 +238,12 @@
 - Initial commit
 
 
-[Unreleased]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.24.0...HEAD
+[v1.24.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.23.0...v1.24.0
+[v1.23.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.22.0...v1.23.0
+[v1.22.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.21.0...v1.22.0
+[v1.21.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.20.0...v1.21.0
+[v1.20.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.19.0...v1.20.0
 [v1.19.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.18.0...v1.19.0
 [v1.18.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.17.0...v1.18.0
 [v1.17.0]: https://github.com/antonbabenko/pre-commit-terraform/compare/v1.16.0...v1.17.0
